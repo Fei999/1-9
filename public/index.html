@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <style>
+            img{
+                width: 100px;
+                height: 100px;;
+            }
+        </style>
+    </head>
+    <body>
+        
+        <input type="file" onchange="fi(this)" />
+        <button onclick="btn()">上传</button>
+        <ul id="list">
+            
+        </ul>
+        <script src="jquery.min.js"></script>
+        <script>
+            $.ajax({
+                        url:"http://localhost:3000/use/sel",
+                        type:"POST",
+                        contentType:false,
+                        processData:false,
+                        success:function(d){
+                            str="";
+                            for(i in d){
+                                str+=`<li><img src="${d[i].img}" alt=""><button type=""  onclick="del(${d[i].id},$(this))" id="delete">删除</button></li>`;
+                            }
+                            $("#list").html(str)
+                        }
+                    })
+            var files;
+            var fd;
+            function fi(el){
+                files=el.files[0];
+            }
+            function btn(){
+                    fd = new FormData();
+                    fd.append('files',files);
+                    $.ajax({
+                        url:"http://localhost:3000/use/add",
+                        type:"POST",
+                        data:fd,
+                        contentType:false,
+                        processData:false,
+                        success:function(d){
+                            str="";
+                            for(i in d){
+                                str+=`<li><img src="${d[i].img}" alt=""><button type=""   onclick="del(${d[i].id},$(this))" id="delete">删除</button></li>`;
+                            }
+                            $("#delete").click(function(event) {
+                                /* Act on the event */
+                                alert(8451)
+                                console.log(this.data-id)
+                            });
+                            $("#list").html(str)
+                        }
+                    })
+            }
+            function del(el,a){
+                var id = el
+                    $.ajax({
+                    url:'http://localhost:3000/use/delete',
+                    type:'POST',
+                    data:{
+                        id:id
+                    },
+                    success:function(e){
+                        if(e){
+                            a.parent().remove()  
+                        }
+                    }
+                })
+            }
+        </script>
+    </body>
+</html>
